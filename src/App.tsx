@@ -36,12 +36,10 @@ function App() {
     const [data, setData] = useState<ITableData[]>([])
     const [filteredData, setFilteredData] = useState<ITableData[]>([])
     const {loading, request} = useHttp()
-
-    //document.URL
-
     useEffect(() => {
+        console.log(document.URL.substr(document.URL.length - 14))
         request(
-            'pressure/patient?snils=222-233-446 85',
+            'pressure/patient?snils=' + document.URL.substr(document.URL.length - 16),
             'GET',
             null,
             'OTYwODg3MjU1NTpwYXNzd29yZA==')

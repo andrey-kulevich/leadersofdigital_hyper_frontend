@@ -27,12 +27,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Header(): JSX.Element {
 	const classes = useStyles();
 	const [user, setUser] = useState()
-	const { loading, request } = useHttp()
-	// const {patientId} = useParams()
+	const { request } = useHttp()
 
 	useEffect(() => {
 		request(
-			'users/user?snils=222-233-446 85',
+			'users/user?snils=' + document.URL.substr(document.URL.length - 16),
 			'GET',
 			null,
 			'OTYwODg3MjU1NTpwYXNzd29yZA==').then(res => setUser(res))
