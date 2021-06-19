@@ -30,7 +30,7 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
     }
 
     const chartData = {
-        labels: data.labels,
+        labels: data.confirmTime,
         datasets: [
             {
                 label: 'Систолическое давление',
@@ -47,7 +47,7 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
-                data: data.dataHigh
+                data: data.systolic
             },
             {
                 label: 'Диастолическое давление',
@@ -64,7 +64,7 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
-                data: data.dataLow
+                data: data.diastolic
             },
             {
                 label: 'Пульс',

@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {
+    Grid, List, ListItem, ListItemIcon, ListItemText,
     Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
+    Typography,
 } from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {IChartPartialData} from "../App";
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,48 +16,96 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: theme.spacing(1),
             padding: theme.spacing(2),
             minHeight: 50
+        },
+        card: {
+            //margin: theme.spacing(0.5),
         }
     }),
 );
 
 export const HeartRateSummary = (
-    {min, max, average}: {min: IChartPartialData, max: IChartPartialData, average: IChartPartialData}) => {
+    {min, max, average}: { min: IChartPartialData, max: IChartPartialData, average: IChartPartialData }) => {
     const classes = useStyles()
 
     return (
         <Paper variant='outlined' className={classes.root}>
-            <TableContainer>
-                <Table size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell>Систолическое давление</TableCell>
-                            <TableCell>Диастолическое давление</TableCell>
-                            <TableCell>Пульс</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow key={1}>
-                            <TableCell>Минимальное</TableCell>
-                            <TableCell>{min.dataHigh}</TableCell>
-                            <TableCell>{min.dataLow}</TableCell>
-                            <TableCell>{min.pulse}</TableCell>
-                        </TableRow>
-                        <TableRow key={2}>
-                            <TableCell>Максимальное</TableCell>
-                            <TableCell>{max.dataHigh}</TableCell>
-                            <TableCell>{max.dataLow}</TableCell>
-                            <TableCell>{max.pulse}</TableCell>
-                        </TableRow>
-                        <TableRow key={3}>
-                            <TableCell>Среднее</TableCell>
-                            <TableCell>{average.dataHigh}</TableCell>
-                            <TableCell>{average.dataLow}</TableCell>
-                            <TableCell>{average.pulse}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Grid container direction='row' spacing={2}>
+                <Grid item xs={4} className={classes.card}>
+                    <Paper variant='outlined'>
+                        <Typography variant='h6' align='center'>Систолическое давление</Typography>
+                        <List dense>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <TrendingUpIcon color='secondary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + max.systolic}/>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <TrendingDownIcon color='primary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + min.systolic}/>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <FavoriteIcon color='secondary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + average.systolic}/>
+                            </ListItem>
+                        </List>
+                    </Paper>
+                </Grid>
+                <Grid item xs={4} className={classes.card}>
+                    <Paper variant='outlined'>
+                        <Typography variant='h6' align='center'>Диастолическое давление</Typography>
+                        <List dense>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <TrendingUpIcon color='secondary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + max.diastolic}/>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <TrendingDownIcon color='primary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + min.diastolic}/>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <FavoriteIcon color='secondary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + average.diastolic}/>
+                            </ListItem>
+                        </List>
+                    </Paper>
+                </Grid>
+                <Grid item xs={4} className={classes.card}>
+                    <Paper variant='outlined'>
+                        <Typography variant='h6' align='center'>Пульс</Typography>
+                        <List dense>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <TrendingUpIcon color='secondary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + max.pulse}/>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <TrendingDownIcon color='primary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + min.pulse}/>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <FavoriteIcon color='secondary'/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Максимальное - ' + average.pulse}/>
+                            </ListItem>
+                        </List>
+                    </Paper>
+                </Grid>
+            </Grid>
         </Paper>
     )
 }

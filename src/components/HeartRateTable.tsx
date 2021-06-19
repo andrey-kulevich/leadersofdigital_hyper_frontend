@@ -5,7 +5,7 @@ import {ITableData} from "../App";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        chartPaper: {
+        paper: {
             marginTop: theme.spacing(1),
             marginBottom: theme.spacing(2),
             maxHeight: 250,
@@ -16,11 +16,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const HeartRateTable = ({data}: {data: ITableData}) => {
+export const HeartRateTable = ({data}: {data: ITableData[]}) => {
     const classes = useStyles()
 
     return (
-        <Paper variant='outlined' className={classes.chartPaper}>
+        <Paper variant='outlined' className={classes.paper}>
             <TableContainer className={classes.container}>
                 <Table stickyHeader size="small" aria-label="a dense table">
                     <TableHead>
@@ -34,9 +34,9 @@ export const HeartRateTable = ({data}: {data: ITableData}) => {
                     <TableBody>
                         {data.map((row, index) => (
                             <TableRow key={index}>
-                                <TableCell>{row.label}</TableCell>
-                                <TableCell>{row.dataHigh}</TableCell>
-                                <TableCell>{row.dataLow}</TableCell>
+                                <TableCell>{row.confirmTime}</TableCell>
+                                <TableCell>{row.systolic}</TableCell>
+                                <TableCell>{row.diastolic}</TableCell>
                                 <TableCell>{row.pulse}</TableCell>
                             </TableRow>
                         ))}

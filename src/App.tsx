@@ -1,97 +1,141 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {HeartRateChart} from "./components/HeartRateChart";
 import {Container} from "@material-ui/core";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {HeartRateTable} from "./components/HeartRateTable";
 import {HeartRateSummary} from "./components/HeartRateSummary";
 import Header from "./components/Header";
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        title: {
-            marginTop: theme.spacing(3),
-        }
-    }),
-);
+import {useHttp} from "./hooks/useHttp";
+import {ContentLoader} from "./components/ContentLoader";
+import Typography from "@material-ui/core/Typography";
 
 export interface IChartPartialData {
-    dataHigh: number;
-    dataLow: number;
+    systolic: number;
+    diastolic: number;
     pulse: number;
 }
 
 export interface IChartData {
-    labels: string[];
-    dataHigh: number[];
-    dataLow: number[];
+    confirmTime: string[];
+    systolic: number[];
+    diastolic: number[];
     pulse: number[];
 }
 
-export type ITableData = {
-    label: string;
-    dataHigh: number;
-    dataLow: number;
+export interface ITableData {
+    confirmTime: string;
+    description: string;
+    diastolic: number;
     pulse: number;
-}[];
-
-const data: IChartData = {
-    labels: [
-        '1 марта 10:30', '1 марта 11:30', '2 марта 12:10', '2 марта 13:30',
-        '4 марта 13:30', '5 марта 13:30', '6 марта 13:30'
-    ],
-    dataHigh: [120, 130, 110, 105, 100, 123, 101],
-    dataLow: [90, 91, 92, 93, 94, 80, 82],
-    pulse: [89, 90, 91, 100, 76, 88, 99]
+    systolic: number;
+    arrhythmia: number;
 }
 
-const getMaxData = (): IChartPartialData => {
-    return {
-        dataHigh: Math.max.apply(null, data.dataHigh),
-        dataLow: Math.max.apply(null, data.dataLow),
-        pulse: Math.max.apply(null, data.pulse),
-    }
-}
-
-const getMinData = (): IChartPartialData => {
-    return {
-        dataHigh: Math.min.apply(null, data.dataHigh),
-        dataLow: Math.min.apply(null, data.dataLow),
-        pulse: Math.min.apply(null, data.pulse),
-    }
-}
-
-const getAverageData = (): IChartPartialData => {
-    return {
-        dataHigh: Math.floor(data.dataHigh.reduce((a, b) => a + b, 0) / data.dataHigh.length),
-        dataLow: Math.floor(data.dataLow.reduce((a, b) => a + b, 0) / data.dataLow.length),
-        pulse: Math.floor(data.pulse.reduce((a, b) => a + b, 0) / data.pulse.length),
-    }
-}
-
-const generateTableData = (): ITableData => {
-    const values: ITableData = []
-    data.labels.forEach((elem, index) => {
-        values.push({
-            label: elem,
-            dataHigh: data.dataHigh[index],
-            dataLow: data.dataLow[index],
-            pulse: data.pulse[index],
-        })
-    })
-    return values
-}
+// const data: ITableData[] = [
+//     {
+//         confirmTime: '10:00',
+//         description: 'sdsd',
+//         diastolic: 99,
+//         pulse: 89,
+//         systolic: 100,
+//         arrhythmia: 55,
+//     },
+//     {
+//         confirmTime: '10:00',
+//         description: 'sdsd',
+//         diastolic: 98,
+//         pulse: 80,
+//         systolic: 110,
+//         arrhythmia: 55,
+//     },
+//     {
+//         confirmTime: '10:00',
+//         description: 'sdsd',
+//         diastolic: 90,
+//         pulse: 80,
+//         systolic: 120,
+//         arrhythmia: 55,
+//     }
+// ]
 
 function App() {
-    const classes = useStyles()
+    const [data, setData] = useState<ITableData[]>()
+    const { loading, request } = useHttp()
+    // const {patientId} = useParams()
+
+    useEffect(() => {
+        request(
+            'pressure/patient?snils=222-233-446 85',
+            'GET',
+            null,
+            'OTYwODg3MjU1NTpwYXNzd29yZA==').then(res => setData(res))
+    }, [])
+
+    const getMaxData = (): IChartPartialData => {
+        const tmp = generateChartData();
+        return {
+            systolic: Math.max.apply(null, tmp.systolic),
+            diastolic: Math.max.apply(null, tmp.diastolic),
+            pulse: Math.max.apply(null, tmp.pulse),
+        }
+    }
+
+    const getMinData = (): IChartPartialData => {
+        const tmp = generateChartData();
+        return {
+            systolic: Math.min.apply(null, tmp.systolic),
+            diastolic: Math.min.apply(null, tmp.diastolic),
+            pulse: Math.min.apply(null, tmp.pulse),
+        }
+    }
+
+    const getAverageData = (): IChartPartialData => {
+        const tmp = generateChartData();
+        return {
+            systolic: Math.floor(tmp.systolic.reduce((a, b) => a + b, 0) / tmp.systolic.length),
+            diastolic: Math.floor(tmp.diastolic.reduce((a, b) => a + b, 0) / tmp.diastolic.length),
+            pulse: Math.floor(tmp.pulse.reduce((a, b) => a + b, 0) / tmp.pulse.length),
+        }
+    }
+
+    const generateChartData = (): IChartData => {
+        const chartData: IChartData = {
+            confirmTime: [],
+            systolic: [],
+            diastolic: [],
+            pulse: [],
+        }
+        if (data) {
+            data.forEach((elem) => {
+                chartData.confirmTime.push(elem.confirmTime)
+                chartData.systolic.push(elem.systolic)
+                chartData.diastolic.push(elem.diastolic)
+                chartData.pulse.push(elem.pulse)
+            })
+        }
+        return chartData
+    }
 
     return (
+        loading ?
+            <ContentLoader message={'Идет загрузка данных...'}/>
+            :
         <>
-            <Header/>
-            <Container>
-                <HeartRateChart data={data}/>
-                <HeartRateSummary min={getMinData()} max={getMaxData()} average={getAverageData()}/>
-                <HeartRateTable data={generateTableData()}/>
-            </Container>
+            {data ?
+                <>
+                    <Header/>
+                    <Container>
+                        <HeartRateChart data={generateChartData()}/>
+                        <HeartRateSummary min={getMinData()} max={getMaxData()} average={getAverageData()}/>
+                        <HeartRateTable data={data}/>
+                    </Container>
+                </>
+                :
+                <Container>
+                    <Typography variant='h5' align='center'>
+                        Не удалось загрузить данные, проверьте правильность ссылки
+                    </Typography>
+                </Container>
+            }
         </>
     );
 }
