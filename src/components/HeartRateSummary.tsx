@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
     Grid, List, ListItem, ListItemIcon, ListItemText,
     Paper,
@@ -8,7 +8,7 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {IChartPartialData} from "../App";
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,9 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(2),
             minHeight: 50
         },
-        card: {
-            //margin: theme.spacing(0.5),
-        }
     }),
 );
 
@@ -30,7 +27,7 @@ export const HeartRateSummary = (
     return (
         <Paper variant='outlined' className={classes.root}>
             <Grid container direction='row' spacing={2}>
-                <Grid item xs={4} className={classes.card}>
+                <Grid item xs={4}>
                     <Paper variant='outlined'>
                         <Typography variant='h6' align='center'>Систолическое давление</Typography>
                         <List dense>
@@ -44,18 +41,18 @@ export const HeartRateSummary = (
                                 <ListItemIcon>
                                     <TrendingDownIcon color='primary'/>
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + min.systolic}/>
+                                <ListItemText primary={'Минимальное - ' + min.systolic}/>
                             </ListItem>
                             <ListItem>
                                 <ListItemIcon>
-                                    <FavoriteIcon color='secondary'/>
+                                    <TrendingFlatIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + average.systolic}/>
+                                <ListItemText primary={'Среднее - ' + average.systolic}/>
                             </ListItem>
                         </List>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} className={classes.card}>
+                <Grid item xs={4}>
                     <Paper variant='outlined'>
                         <Typography variant='h6' align='center'>Диастолическое давление</Typography>
                         <List dense>
@@ -69,18 +66,18 @@ export const HeartRateSummary = (
                                 <ListItemIcon>
                                     <TrendingDownIcon color='primary'/>
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + min.diastolic}/>
+                                <ListItemText primary={'Минимальное - ' + min.diastolic}/>
                             </ListItem>
                             <ListItem>
                                 <ListItemIcon>
-                                    <FavoriteIcon color='secondary'/>
+                                    <TrendingFlatIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + average.diastolic}/>
+                                <ListItemText primary={'Среднее - ' + average.diastolic}/>
                             </ListItem>
                         </List>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} className={classes.card}>
+                <Grid item xs={4}>
                     <Paper variant='outlined'>
                         <Typography variant='h6' align='center'>Пульс</Typography>
                         <List dense>
@@ -88,19 +85,19 @@ export const HeartRateSummary = (
                                 <ListItemIcon>
                                     <TrendingUpIcon color='secondary'/>
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + max.pulse}/>
+                                <ListItemText primary={'Максимальный - ' + max.pulse}/>
                             </ListItem>
                             <ListItem>
                                 <ListItemIcon>
                                     <TrendingDownIcon color='primary'/>
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + min.pulse}/>
+                                <ListItemText primary={'Минимальный - ' + min.pulse}/>
                             </ListItem>
                             <ListItem>
                                 <ListItemIcon>
-                                    <FavoriteIcon color='secondary'/>
+                                    <TrendingFlatIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={'Максимальное - ' + average.pulse}/>
+                                <ListItemText primary={'Средний - ' + average.pulse}/>
                             </ListItem>
                         </List>
                     </Paper>

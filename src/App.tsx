@@ -7,6 +7,8 @@ import Header from "./components/Header";
 import {useHttp} from "./hooks/useHttp";
 import {ContentLoader} from "./components/ContentLoader";
 import Typography from "@material-ui/core/Typography";
+import {FiltersPanel} from "./components/FiltersPanel";
+import {getWeekDates} from "./utils";
 
 export interface IChartPartialData {
     systolic: number;
@@ -30,45 +32,47 @@ export interface ITableData {
     arrhythmia: number;
 }
 
-// const data: ITableData[] = [
-//     {
-//         confirmTime: '10:00',
-//         description: 'sdsd',
-//         diastolic: 99,
-//         pulse: 89,
-//         systolic: 100,
-//         arrhythmia: 55,
-//     },
-//     {
-//         confirmTime: '10:00',
-//         description: 'sdsd',
-//         diastolic: 98,
-//         pulse: 80,
-//         systolic: 110,
-//         arrhythmia: 55,
-//     },
-//     {
-//         confirmTime: '10:00',
-//         description: 'sdsd',
-//         diastolic: 90,
-//         pulse: 80,
-//         systolic: 120,
-//         arrhythmia: 55,
-//     }
-// ]
-
 function App() {
-    const [data, setData] = useState<ITableData[]>()
-    const { loading, request } = useHttp()
-    // const {patientId} = useParams()
+    const [data, setData] = useState<ITableData[]>([])
+    const [filteredData, setFilteredData] = useState<ITableData[]>([])
+    const {loading, request} = useHttp()
+
+    //document.URL
 
     useEffect(() => {
         request(
             'pressure/patient?snils=222-233-446 85',
             'GET',
             null,
-            'OTYwODg3MjU1NTpwYXNzd29yZA==').then(res => setData(res))
+            'OTYwODg3MjU1NTpwYXNzd29yZA==')
+            .then((res: ITableData[]) => {
+                let reformatted = res
+                reformatted = reformatted.filter(elem => elem.diastolic > 30 && elem.systolic > 50 && elem.pulse > 40)
+                setData(reformatted)
+            }
+        )
     }, [])
+
+    useEffect(() => {
+        setFilterBy('week')
+    }, [data])
+
+    const setFilterBy = (filterBy: string) => {
+        switch (filterBy) {
+            case 'week':
+                let [start, end] = getWeekDates();
+                setFilteredData(data.filter(elem => +new Date(elem.confirmTime) >= +start && +new Date(elem.confirmTime) < +end));
+                break;
+            case 'month':
+                setFilteredData(data.filter(elem => new Date(elem.confirmTime).getMonth() === new Date().getMonth()));
+                break;
+            case 'year':
+                setFilteredData(data.filter(elem => new Date(elem.confirmTime).getFullYear() === new Date().getFullYear()));
+                break;
+            case 'all_time':
+                setFilteredData(data);
+        }
+    }
 
     const getMaxData = (): IChartPartialData => {
         const tmp = generateChartData();
@@ -104,8 +108,8 @@ function App() {
             diastolic: [],
             pulse: [],
         }
-        if (data) {
-            data.forEach((elem) => {
+        if (filteredData) {
+            filteredData.forEach((elem) => {
                 chartData.confirmTime.push(elem.confirmTime)
                 chartData.systolic.push(elem.systolic)
                 chartData.diastolic.push(elem.diastolic)
@@ -119,24 +123,25 @@ function App() {
         loading ?
             <ContentLoader message={'Идет загрузка данных...'}/>
             :
-        <>
-            {data ?
-                <>
-                    <Header/>
+            <>
+                {data ?
+                    <>
+                        <Header/>
+                        <Container>
+                            <FiltersPanel filterBy={['week', 'month', 'year', 'all_time']} setFilterBy={setFilterBy}/>
+                            <HeartRateChart data={generateChartData()}/>
+                            <HeartRateSummary min={getMinData()} max={getMaxData()} average={getAverageData()}/>
+                            <HeartRateTable data={filteredData}/>
+                        </Container>
+                    </>
+                    :
                     <Container>
-                        <HeartRateChart data={generateChartData()}/>
-                        <HeartRateSummary min={getMinData()} max={getMaxData()} average={getAverageData()}/>
-                        <HeartRateTable data={data}/>
+                        <Typography variant='h5' align='center'>
+                            Не удалось загрузить данные, проверьте правильность ссылки
+                        </Typography>
                     </Container>
-                </>
-                :
-                <Container>
-                    <Typography variant='h5' align='center'>
-                        Не удалось загрузить данные, проверьте правильность ссылки
-                    </Typography>
-                </Container>
-            }
-        </>
+                }
+            </>
     );
 }
 

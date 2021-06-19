@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Line} from 'react-chartjs-2';
 import {Paper} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {IChartData} from "../App";
+import {beautifyDate} from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,7 +31,7 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
     }
 
     const chartData = {
-        labels: data.confirmTime,
+        labels: data.confirmTime.map(elem => beautifyDate(elem)),
         datasets: [
             {
                 label: 'Систолическое давление',
