@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/leadersofdigital_hyper_frontend/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/leadersofdigital_hyper_frontend/static/js/main.32f67840.chunk.js",
+    "main.js.map": "/leadersofdigital_hyper_frontend/static/js/main.32f67840.chunk.js.map",
+    "runtime-main.js": "/leadersofdigital_hyper_frontend/static/js/runtime-main.26ec8c6a.js",
+    "runtime-main.js.map": "/leadersofdigital_hyper_frontend/static/js/runtime-main.26ec8c6a.js.map",
+    "static/js/2.239d2b0a.chunk.js": "/leadersofdigital_hyper_frontend/static/js/2.239d2b0a.chunk.js",
+    "static/js/2.239d2b0a.chunk.js.map": "/leadersofdigital_hyper_frontend/static/js/2.239d2b0a.chunk.js.map",
+    "static/js/3.8d53d673.chunk.js": "/leadersofdigital_hyper_frontend/static/js/3.8d53d673.chunk.js",
+    "static/js/3.8d53d673.chunk.js.map": "/leadersofdigital_hyper_frontend/static/js/3.8d53d673.chunk.js.map",
+    "index.html": "/leadersofdigital_hyper_frontend/index.html",
+    "static/css/main.6dea0f05.chunk.css.map": "/leadersofdigital_hyper_frontend/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.239d2b0a.chunk.js.LICENSE.txt": "/leadersofdigital_hyper_frontend/static/js/2.239d2b0a.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.26ec8c6a.js",
+    "static/js/2.239d2b0a.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.32f67840.chunk.js"
+  ]
+}
