@@ -15,6 +15,11 @@ export function getWeekDates() {
     return [start, end];
 }
 
+export function dateDiff(first: Date, second: Date) {
+    // @ts-ignore
+    return Math.round((second - first) / (1000*60*60*24));
+}
+
 export function beautifyDate(date: string): string {
     return date.slice(5, -3).replace('T', ' ')
 }

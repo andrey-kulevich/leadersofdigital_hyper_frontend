@@ -1,5 +1,6 @@
 {
-  "name": "leadersofdigital_vteam_frontend",
+  "name": "leadersofdigital_hyper_frontend",
+  "homepage": "https://andrey-kulevich.github.io/leadersofdigital_hyper_frontend/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,6 +14,7 @@
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
     "chart.js": "^3.3.2",
+    "gh-pages": "^3.2.2",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.0.3",
     "react-dom": "^17.0.2",
@@ -22,6 +24,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

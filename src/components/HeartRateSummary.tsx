@@ -5,7 +5,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {IChartPartialData} from "../App";
+import {ISummaryData} from "../App";
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const HeartRateSummary = (
-    {min, max, average}: { min: IChartPartialData, max: IChartPartialData, average: IChartPartialData }) => {
+    {min, max, average}: { min: ISummaryData, max: ISummaryData, average: ISummaryData }) => {
     const classes = useStyles()
 
     return (

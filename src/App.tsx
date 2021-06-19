@@ -8,9 +8,9 @@ import {useHttp} from "./hooks/useHttp";
 import {ContentLoader} from "./components/ContentLoader";
 import Typography from "@material-ui/core/Typography";
 import {FiltersPanel} from "./components/FiltersPanel";
-import {getWeekDates} from "./utils";
+import {dateDiff} from "./utils";
 
-export interface IChartPartialData {
+export interface ISummaryData {
     systolic: number;
     diastolic: number;
     pulse: number;
@@ -21,6 +21,12 @@ export interface IChartData {
     systolic: number[];
     diastolic: number[];
     pulse: number[];
+}
+
+export interface IChartDeviationsData {
+    systolicDeviation: number[];
+    diastolicDeviation: number[];
+    pulseDeviation: number[];
 }
 
 export interface ITableData {
@@ -36,8 +42,8 @@ function App() {
     const [data, setData] = useState<ITableData[]>([])
     const [filteredData, setFilteredData] = useState<ITableData[]>([])
     const {loading, request} = useHttp()
+
     useEffect(() => {
-        console.log(document.URL.substr(document.URL.length - 14))
         request(
             'pressure/patient?snils=' + document.URL.substr(document.URL.length - 16),
             'GET',
@@ -58,8 +64,7 @@ function App() {
     const setFilterBy = (filterBy: string) => {
         switch (filterBy) {
             case 'week':
-                let [start, end] = getWeekDates();
-                setFilteredData(data.filter(elem => +new Date(elem.confirmTime) >= +start && +new Date(elem.confirmTime) < +end));
+                setFilteredData(data.filter(elem => dateDiff(new Date(elem.confirmTime), new Date()) < 7));
                 break;
             case 'month':
                 setFilteredData(data.filter(elem => new Date(elem.confirmTime).getMonth() === new Date().getMonth()));
@@ -72,7 +77,7 @@ function App() {
         }
     }
 
-    const getMaxData = (): IChartPartialData => {
+    const getMaxData = (): ISummaryData => {
         const tmp = generateChartData();
         return {
             systolic: Math.max.apply(null, tmp.systolic),
@@ -81,7 +86,7 @@ function App() {
         }
     }
 
-    const getMinData = (): IChartPartialData => {
+    const getMinData = (): ISummaryData => {
         const tmp = generateChartData();
         return {
             systolic: Math.min.apply(null, tmp.systolic),
@@ -90,7 +95,7 @@ function App() {
         }
     }
 
-    const getAverageData = (): IChartPartialData => {
+    const getAverageData = (): ISummaryData => {
         const tmp = generateChartData();
         return {
             systolic: Math.floor(tmp.systolic.reduce((a, b) => a + b, 0) / tmp.systolic.length),
@@ -117,6 +122,26 @@ function App() {
         return chartData
     }
 
+    const generateDeviationsData = (): IChartDeviationsData => {
+        const average = getAverageData();
+        const deviations: IChartDeviationsData = {
+            systolicDeviation: [],
+            diastolicDeviation: [],
+            pulseDeviation: [],
+        }
+        if (filteredData) {
+            filteredData.forEach((elem) => {
+                if (Math.abs(elem.systolic - average.systolic) > 20) deviations.systolicDeviation.push(elem.systolic)
+                else deviations.systolicDeviation.push(0)
+                if (Math.abs(elem.diastolic - average.diastolic) > 20) deviations.diastolicDeviation.push(elem.diastolic)
+                else deviations.diastolicDeviation.push(0)
+                if (Math.abs(elem.pulse - average.pulse) > 20) deviations.pulseDeviation.push(elem.pulse)
+                else deviations.pulseDeviation.push(0)
+            })
+        }
+        return deviations
+    }
+
     return (
         loading ?
             <ContentLoader message={'Идет загрузка данных...'}/>
@@ -127,9 +152,9 @@ function App() {
                         <Header/>
                         <Container>
                             <FiltersPanel filterBy={['week', 'month', 'year', 'all_time']} setFilterBy={setFilterBy}/>
-                            <HeartRateChart data={generateChartData()}/>
+                            <HeartRateChart data={generateChartData()} deviations={generateDeviationsData()}/>
                             <HeartRateSummary min={getMinData()} max={getMaxData()} average={getAverageData()}/>
-                            <HeartRateTable data={filteredData}/>
+                            <HeartRateTable data={filteredData} averageValues={getAverageData()}/>
                         </Container>
                     </>
                     :

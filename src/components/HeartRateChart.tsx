@@ -2,7 +2,7 @@ import React from 'react';
 import {Line} from 'react-chartjs-2';
 import {Paper} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {IChartData} from "../App";
+import {IChartData, IChartDeviationsData} from "../App";
 import {beautifyDate} from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const HeartRateChart = ({data}: {data: IChartData}) => {
+export const HeartRateChart = ({data, deviations}: {data: IChartData, deviations: IChartDeviationsData}) => {
     const classes = useStyles()
 
     const options = {
@@ -23,10 +23,20 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
         maintainAspectRatio: false,
         scales: {
             yAxes: [{
+                display: true,
                 ticks: {
-                    suggestedMin: 0
+                    suggestedMin: 1,
                 }
             }]
+        },
+        elements: {
+            point: {
+                radius : (context: any) => {
+                    let value = context.dataset.data[context.dataIndex];
+                    return value === 0 ? 0 : 5;
+                },
+                display: false
+            }
         }
     }
 
@@ -34,14 +44,12 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
         labels: data.confirmTime.map(elem => beautifyDate(elem)),
         datasets: [
             {
-                label: 'Систолическое давление',
+                label: 'Систолическое',
                 fill: false,
                 lineTension: 0.1,
                 backgroundColor: 'rgb(255,134,0)',
                 borderColor: 'rgb(255,134,0)',
                 borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
@@ -51,14 +59,12 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
                 data: data.systolic
             },
             {
-                label: 'Диастолическое давление',
+                label: 'Диастолическое',
                 fill: false,
                 lineTension: 0.1,
                 backgroundColor: 'rgb(0,159,255)',
                 borderColor: 'rgb(0,159,255)',
                 borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
@@ -74,8 +80,6 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
                 backgroundColor: 'rgb(248,104,104)',
                 borderColor: 'rgb(248,104,104)',
                 borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
@@ -83,6 +87,29 @@ export const HeartRateChart = ({data}: {data: IChartData}) => {
                 pointRadius: 1,
                 pointHitRadius: 10,
                 data: data.pulse
+            },
+            {
+                label: 'Отклонения систолическое',
+                fill: false,
+                showLine: false,
+                backgroundColor: 'rgb(255,0,0)',
+                data: deviations.systolicDeviation
+            },
+            {
+                label: 'Отклонения диастолическое',
+                fill: false,
+                showLine: false,
+                lineTension: 0.1,
+                backgroundColor: 'rgb(255,0,0)',
+                data: deviations.diastolicDeviation
+            },
+            {
+                label: 'Отклонения пульс',
+                fill: false,
+                showLine: false,
+                lineTension: 0.1,
+                backgroundColor: 'rgb(255,0,0)',
+                data: deviations.pulseDeviation
             },
         ]
     }
